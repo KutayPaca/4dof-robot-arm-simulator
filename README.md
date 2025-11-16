@@ -1,34 +1,56 @@
-# 3 Serbestlik Dereceli (3 DOF) Robot Kolu Simülasyonu
+# 4 Serbestlik Dereceli (4 DOF) Robot Kolu Simülatörü
 
-OpenTK ve C# kullanılarak geliştirilmiş interaktif 3D robot kolu simülasyonu.
+OpenTK ve C# kullanılarak geliştirilmiş, bilek rotasyonu (wrist roll) özellikli gelişmiş 3D robot kolu simülasyonu.
 
 ## 🎯 Özellikler
 
-### Zorunlu Gereksinimler (Tamamlandı ✅)
+### Ana Özellikler
 
-#### 1. Eklem Sınırlandırması ve Kinematik Stabilizasyon
-- ✅ Theta2 (Omuz) ve Theta3 (Dirsek) açıları [-90°, 90°] aralığında sınırlandırılmıştır
-- ✅ `MathHelper.Clamp()` metodu kullanılarak fiziksel sınırlamalar uygulanmıştır
-- ✅ Robot kolunun kendi içine veya zemine çarpması engellenmiştir
+#### 🤖 4 Serbestlik Dereceli Robot Kolu
+- **Theta1 (Taban)**: Y ekseni etrafında sınırsız rotasyon
+- **Theta2 (Omuz)**: X ekseni etrafında [-90°, 90°] sınırlı hareket
+- **Theta3 (Dirsek)**: X ekseni etrafında [-90°, 90°] sınırlı hareket
+- **Theta4 (Bilek Roll)**: Y ekseni etrafında sınırsız 360° rotasyon
 
-#### 2. İleri Kinematik Değer Hesaplama ve Gösterimi
-- ✅ Uç efektörün X, Y, Z global koordinatları pencere başlığında gösterilmektedir
-- ✅ `GL.GetFloat(GetPName.ModelviewMatrix)` ile model-view matrisi alınmaktadır
-- ✅ Toplam uzunluk (Euclidean Distance) hesaplanmakta ve gösterilmektedir
-  - Formül: `√(X² + Y² + Z²)`
+#### 📐 İleri Kinematik (Forward Kinematics)
+- Gerçek zamanlı uç efektör pozisyon hesaplama (X, Y, Z)
+- Model-view matrisi ile doğrudan koordinat çıkarımı
+- Toplam erişim mesafesi hesaplama: `√(X² + Y² + Z²)`
+- Pencere başlığında anlık koordinat gösterimi
 
-#### 3. Pençe Mekanizması
-- ✅ X tuşu ile açılıp kapanabilen gerçekçi pençe (gripper) tasarımı
-- ✅ İki parmaklı pençe mekanizması (sol ve sağ)
-- ✅ Pençe durumu ("Açık" / "Kapalı") pencere başlığında gösterilmektedir
-- ✅ Yumuşak açılma/kapanma animasyonu
+#### 🔧 Eklem Sınırlandırması
+- Theta2 ve Theta3 için fiziksel sınırlar: [-90°, 90°]
+- `MathHelper.Clamp()` ile kinematik stabilizasyon
+- Robot kolunun kendi içine veya zemine çarpma koruması
+
+#### 🤏 İnteraktif Pençe (Gripper) Mekanizması
+- X tuşu ile açılıp kapanabilen çift parmaklı tasarım
+- Yumuşak animasyonlu açılma/kapanma
+- Pençe durumu gerçek zamanlı gösterimi
+- Theta4 ile birlikte tam 4 DOF kontrol
+
+#### 🎨 Gerçekçi 3D Geometri
+- **Silindir Link Geometrisi**: Tüm linkler profesyonel silindir modelleme
+  - Link 1: 0.15 radius, 2.0 height, 16 segment
+  - Link 2: 0.12 radius, 1.5 height, 16 segment
+  - Link 3: 0.10 radius, 1.0 height, 16 segment
+- **Küre Eklemler**: Gerçekçi eklem noktaları
+- **Renk Kodlu Linkler**: Kolay görsel takip
+- **16 Segment Smooth Rendering**: Pürüzsüz yüzeyler
+
+#### 📊 Transformasyon Hiyerarşisi
+```
+Taban → Theta1 (Y) → Link1 → Theta2 (X) → Link2 → 
+Theta3 (X) → Link3 → Theta4 (Y Roll) → Gripper
+```
 
 ## 🎮 Kontroller
 
 ### Robot Kolu Kontrolleri
-- **Q / E**: Theta1 - Taban dönüşü (Y ekseni etrafında)
-- **W / S**: Theta2 - Omuz hareketi (X ekseni etrafında, [-90°, 90°] sınırlı)
-- **A / D**: Theta3 - Dirsek hareketi (X ekseni etrafında, [-90°, 90°] sınırlı)
+- **Q / E**: Theta1 - Taban dönüşü (Y ekseni, sınırsız rotasyon)
+- **W / S**: Theta2 - Omuz hareketi (X ekseni, [-90°, 90°] sınırlı)
+- **A / D**: Theta3 - Dirsek hareketi (X ekseni, [-90°, 90°] sınırlı)
+- **R / F**: Theta4 - Bilek roll dönüşü (Y ekseni, sınırsız 360° rotasyon)
 - **X**: Pençeyi aç/kapat (toggle)
 
 ### Kamera Kontrolleri
@@ -52,10 +74,11 @@ RobotKoluSimulasyonu/
 ## 🔧 Teknik Detaylar
 
 ### Robot Kolu Parametreleri
-- **L1 = 2.0**: Taban-Omuz arası uzunluk
-- **L2 = 1.5**: Omuz-Dirsek arası uzunluk
-- **L3 = 1.0**: Dirsek-Uç efektör arası uzunluk
+- **L1 = 2.0**: Taban-Omuz arası uzunluk (silindir: radius=0.15, 16 segment)
+- **L2 = 1.5**: Omuz-Dirsek arası uzunluk (silindir: radius=0.12, 16 segment)
+- **L3 = 1.0**: Dirsek-Bilek arası uzunluk (silindir: radius=0.10, 16 segment)
 - **Maksimum Erişim**: ~4.5 birim (tamamen uzanmış durumda)
+- **Geometri**: Gerçekçi silindir geometrisi ile profesyonel modelleme
 
 ### İleri Kinematik (GÜNCEL KOD)
 Robot kolunun uç efektör pozisyonu, her frame'de model-view matrisinden hesaplanır:
@@ -89,8 +112,9 @@ endEffectorX = modelMatrix.M41;
 
 ### Eklem Sınırları
 ```csharp
-theta2 = MathHelper.Clamp(theta2, -90f, 90f);
-theta3 = MathHelper.Clamp(theta3, -90f, 90f);
+theta2 = MathHelper.Clamp(theta2, -90f, 90f);  // Omuz: [-90°, 90°]
+theta3 = MathHelper.Clamp(theta3, -90f, 90f);  // Dirsek: [-90°, 90°]
+// theta1 (Taban) ve theta4 (Bilek Roll): Sınırsız 360° rotasyon
 ```
 
 ### OpenGL Ayarları
@@ -156,17 +180,17 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 
 Örnek: 
 ```
-3 DOF Robot Kolu | X: 0.00 Y: 2.23 Z: -8.46 | Toplam Uzunluk: 8.75 | Pençe: Kapalı | Kontroller: Q/E(Taban) W/S(Omuz) A/D(Dirsek) X(Pençe) Oklar(Kamera)
+4 DOF Robot Kolu | X: 0.00 Y: 2.23 Z: -8.46 | Toplam Uzunluk: 8.75 | Pençe: Kapalı | θ4: 45.0° | Kontroller: Q/E(Taban) W/S(Omuz) A/D(Dirsek) R/F(Bilek Roll) X(Pençe) Oklar(Kamera)
 ```
 
 ## 🎨 Görsel Özellikler
 
 - **Renkli Robot Kısımları**:
-  - 🔴 Kırmızı: Link 1 (Taban-Omuz)
-  - 🟢 Yeşil: Link 2 (Omuz-Dirsek)
-  - 🔵 Mavi: Link 3 (Dirsek-Uç efektör)
-  - 🟡 Sarı: Pençe mekanizması
-  - ⚪ Gri: Eklemler ve taban
+  - 🔴 Kırmızı: Link 1 (Taban-Omuz) - Silindir geometri
+  - 🟢 Yeşil: Link 2 (Omuz-Dirsek) - Silindir geometri
+  - 🔵 Mavi: Link 3 (Dirsek-Bilek) - Silindir geometri
+  - 🟡 Sarı: Pençe mekanizması (theta4 ile roll rotasyonu)
+  - ⚪ Gri: Eklemler ve taban (küre geometri)
 
 - **Sahne Elemanları**:
   - Grid zemin (beyaz çizgiler)
@@ -195,15 +219,45 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 - ✅ **OpenTK 4.8.2** ve **.NET 6.0** ile tam uyumlu
 - ✅ Konsol çıktısı ile **debug bilgileri** sağlanır
 
+## 🚀 Neden Bu Proje?
+
+Bu 4 DOF robot kolu simülatörü, modern robotik sistemlerin temel prensiplerini öğrenmek ve uygulamak için geliştirilmiştir:
+
+- ✅ **Gerçek Dünya Modelleme**: Endüstriyel robot kollarındaki 4 eksenli sistemleri simüle eder
+- ✅ **Forward Kinematics**: Eklem açılarından uç efektör pozisyonunu hesaplama
+- ✅ **Eklem Sınırları**: Fiziksel kısıtlamaları uygulayarak gerçekçi hareket
+- ✅ **Bilek Rotasyonu**: Theta4 ile profesyonel robot kollarındaki roll özelliği
+- ✅ **3D Görselleştirme**: OpenGL ile gerçek zamanlı rendering
+- ✅ **İnteraktif Kontrol**: Anlık klavye kontrolü ile dinamik test
+
+## 💡 Kullanım Alanları
+
+- 📚 **Eğitim**: Robotik kinematik öğrenimi
+- 🔬 **Araştırma**: Robot kolu davranış simülasyonu
+- 🎮 **Prototipleme**: Gerçek robot kontrol testleri öncesi validasyon
+- 🛠️ **Geliştirme**: Forward kinematics algoritma testi
+
 ## 👨‍💻 Geliştirici
 
-Robotik Sistemler Projesi - 3 DOF Robot Kolu Simülasyonu
+**Robotik Sistemler Projesi - 4 DOF Robot Kolu Simülatörü**
 
 **Geliştirme Ortamı:**
 - Visual Studio Code
 - .NET 6.0.428
 - OpenTK 4.8.2
 - Windows 11
+
+**Temel Özellikler:**
+- 4 Serbestlik Dereceli Robot Kolu
+- Bilek Rotasyonu (Wrist Roll - Theta4)
+- Silindir Geometri Modelleme
+- Forward Kinematics
+- İnteraktif Gripper Kontrolü
+- Gerçek Zamanlı Koordinat Gösterimi
+
+## 📜 Lisans
+
+Bu proje eğitim amaçlı geliştirilmiştir.
 
 ---
 

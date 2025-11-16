@@ -13,6 +13,7 @@ namespace RobotKoluSimulasyonu
         private float theta1 = 0f;      // Taban dönüşü (Y ekseni)
         private float theta2 = 0f;      // Omuz (X ekseni)
         private float theta3 = 0f;      // Dirsek (X ekseni)
+        private float theta4 = 0f;      // Bilek/Roll (Z ekseni) - YENİ 4. EKLEM
         
         // Kol uzunlukları
         private const float L1 = 2.0f;  // Taban-Omuz arası
@@ -93,9 +94,16 @@ namespace RobotKoluSimulasyonu
             if (keyboard.IsKeyDown(Keys.D))
                 theta3 -= rotationSpeed;
             
+            // Theta4 (Bilek/Roll) - R/F tuşları (sınırsız 360° dönüş)
+            if (keyboard.IsKeyDown(Keys.R))
+                theta4 += rotationSpeed;
+            if (keyboard.IsKeyDown(Keys.F))
+                theta4 -= rotationSpeed;
+            
             // ZORUNLU GEREKSINIM 1: Eklem Sınırlandırması [-90, 90]
             theta2 = MathHelper.Clamp(theta2, -90f, 90f);
             theta3 = MathHelper.Clamp(theta3, -90f, 90f);
+            // Theta4 sınırsız - 360° dönebilir
             
             // Pençe kontrolü - X/Z tuşları
             if (keyboard.IsKeyPressed(Keys.X))
@@ -217,11 +225,10 @@ namespace RobotKoluSimulasyonu
             // Theta1 (Taban dönüşü - Y ekseni etrafında)
             GL.Rotate(theta1, 0f, 1f, 0f);
             
-            // Link 1 (Taban-Omuz)
+            // Link 1 (Taban-Omuz) - Silindir geometrisi
             GL.PushMatrix();
-            GL.Translate(0f, L1 / 2f, 0f);
             GL.Color3(0.8f, 0.2f, 0.2f);
-            DrawBox(0.3f, L1, 0.3f);
+            DrawCylinder(0.15f, L1, 16);
             GL.PopMatrix();
             
             // Omuz eklemi
@@ -232,11 +239,10 @@ namespace RobotKoluSimulasyonu
             // Theta2 (Omuz - X ekseni etrafında)
             GL.Rotate(theta2, 1f, 0f, 0f);
             
-            // Link 2 (Omuz-Dirsek)
+            // Link 2 (Omuz-Dirsek) - Silindir geometrisi
             GL.PushMatrix();
-            GL.Translate(0f, L2 / 2f, 0f);
             GL.Color3(0.2f, 0.8f, 0.2f);
-            DrawBox(0.25f, L2, 0.25f);
+            DrawCylinder(0.12f, L2, 16);
             GL.PopMatrix();
             
             // Dirsek eklemi
@@ -247,15 +253,17 @@ namespace RobotKoluSimulasyonu
             // Theta3 (Dirsek - X ekseni etrafında)
             GL.Rotate(theta3, 1f, 0f, 0f);
             
-            // Link 3 (Dirsek-Uç efektör)
+            // Link 3 (Dirsek-Uç efektör) - Silindir geometrisi
             GL.PushMatrix();
-            GL.Translate(0f, L3 / 2f, 0f);
             GL.Color3(0.2f, 0.2f, 0.8f);
-            DrawBox(0.2f, L3, 0.2f);
+            DrawCylinder(0.1f, L3, 16);
             GL.PopMatrix();
             
             // Uç efektöre git
             GL.Translate(0f, L3, 0f);
+            
+            // Theta4 (Bilek/Roll - Z ekseni etrafında) - YENİ 4. EKLEM
+            GL.Rotate(theta4, 0f, 1f, 0f);
             
             // ZORUNLU GEREKSINIM 2: Uç efektör koordinatlarını al
             float[] modelMatrixArray = new float[16];
@@ -322,9 +330,9 @@ namespace RobotKoluSimulasyonu
             // ZORUNLU GEREKSINIM: Tüm bilgileri pencere başlığında göster
             string gripperStatus = gripperOpen ? "Açık" : "Kapalı";
             Title = string.Format(
-                "3 DOF Robot Kolu | X: {0:F2} Y: {1:F2} Z: {2:F2} | Toplam Uzunluk: {3:F2} | Pençe: {4} | " +
-                "Kontroller: Q/E(Taban) W/S(Omuz) A/D(Dirsek) X(Pençe) Oklar(Kamera)",
-                endEffectorX, endEffectorY, endEffectorZ, totalReach, gripperStatus
+                "4 DOF Robot Kolu | X: {0:F2} Y: {1:F2} Z: {2:F2} | Toplam Uzunluk: {3:F2} | Pençe: {4} | θ4: {5:F1}° | " +
+                "Kontroller: Q/E(Taban) W/S(Omuz) A/D(Dirsek) R/F(Bilek Roll) X(Pençe) Oklar(Kamera)",
+                endEffectorX, endEffectorY, endEffectorZ, totalReach, gripperStatus, theta4
             );
         }
 
