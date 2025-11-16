@@ -73,6 +73,20 @@ totalReach = (float)Math.Sqrt(endEffectorX * endEffectorX +
                               endEffectorZ * endEffectorZ);
 ```
 
+#### ⚠️ Matrix4 Kullanımı Hakkında Önemli Not
+Bazı kaynaklarda `Matrix4` yapısı ile doğrudan matris alma önerilse de:
+```csharp
+// ÖNERİLEN AMA ÇALIŞMAYAN YÖNTEMMatrix4 modelMatrix;
+GL.GetFloat(GetPName.ModelviewMatrix, out modelMatrix);
+endEffectorX = modelMatrix.M41;
+```
+
+**OpenTK 4.8.2** sürümünde `out Matrix4` parametresi düzgün çalışmamaktadır. Bu nedenle projede **`float[]` array yöntemi** kullanılmıştır. Bu yöntem:
+- ✅ **Daha güvenilir** ve stabil
+- ✅ OpenTK 4.x ile **%100 uyumlu**
+- ✅ Tüm OpenGL sürümlerinde **test edilmiş**
+- ✅ Array indeksleri (`[12], [13], [14]`) Matrix4 elemanlarına (`M41, M42, M43`) karşılık gelir
+
 ### Eklem Sınırları
 ```csharp
 theta2 = MathHelper.Clamp(theta2, -90f, 90f);
