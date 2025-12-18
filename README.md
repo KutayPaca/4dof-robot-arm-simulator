@@ -2,34 +2,34 @@
 
 OpenTK ve C# kullanılarak geliştirilmiş, bilek rotasyonu (wrist roll) özellikli gelişmiş 3D robot kolu simülasyonu.
 
-## 🎯 Özellikler
+## Özellikler
 
 ### Ana Özellikler
 
-#### 🤖 4 Serbestlik Dereceli Robot Kolu
+#### 4 Serbestlik Dereceli Robot Kolu
 - **Theta1 (Taban)**: Y ekseni etrafında sınırsız rotasyon
 - **Theta2 (Omuz)**: X ekseni etrafında [-90°, 90°] sınırlı hareket
 - **Theta3 (Dirsek)**: X ekseni etrafında [-90°, 90°] sınırlı hareket
 - **Theta4 (Bilek Roll)**: Y ekseni etrafında sınırsız 360° rotasyon
 
-#### 📐 İleri Kinematik (Forward Kinematics)
+#### İleri Kinematik (Forward Kinematics)
 - Gerçek zamanlı uç efektör pozisyon hesaplama (X, Y, Z)
 - Model-view matrisi ile doğrudan koordinat çıkarımı
 - Toplam erişim mesafesi hesaplama: `√(X² + Y² + Z²)`
 - Pencere başlığında anlık koordinat gösterimi
 
-#### 🔧 Eklem Sınırlandırması
+#### Eklem Sınırlandırması
 - Theta2 ve Theta3 için fiziksel sınırlar: [-90°, 90°]
 - `MathHelper.Clamp()` ile kinematik stabilizasyon
 - Robot kolunun kendi içine veya zemine çarpma koruması
 
-#### 🤏 İnteraktif Pençe (Gripper) Mekanizması
+#### İnteraktif Pençe (Gripper) Mekanizması
 - X tuşu ile açılıp kapanabilen çift parmaklı tasarım
 - Yumuşak animasyonlu açılma/kapanma
 - Pençe durumu gerçek zamanlı gösterimi
 - Theta4 ile birlikte tam 4 DOF kontrol
 
-#### 🎨 Gerçekçi 3D Geometri
+#### Gerçekçi 3D Geometri
 - **Silindir Link Geometrisi**: Tüm linkler profesyonel silindir modelleme
   - Link 1: 0.15 radius, 2.0 height, 16 segment
   - Link 2: 0.12 radius, 1.5 height, 16 segment
@@ -38,13 +38,13 @@ OpenTK ve C# kullanılarak geliştirilmiş, bilek rotasyonu (wrist roll) özelli
 - **Renk Kodlu Linkler**: Kolay görsel takip
 - **16 Segment Smooth Rendering**: Pürüzsüz yüzeyler
 
-#### 📊 Transformasyon Hiyerarşisi
+#### Transformasyon Hiyerarşisi
 ```
 Taban → Theta1 (Y) → Link1 → Theta2 (X) → Link2 → 
 Theta3 (X) → Link3 → Theta4 (Y Roll) → Gripper
 ```
 
-## 🎮 Kontroller
+## Kontroller
 
 ### Robot Kolu Kontrolleri
 - **Q / E**: Theta1 - Taban dönüşü (Y ekseni, sınırsız rotasyon)
@@ -61,7 +61,7 @@ Theta3 (X) → Link3 → Theta4 (Y Roll) → Gripper
 ### Diğer
 - **ESC**: Uygulamadan çık
 
-## 🏗️ Proje Yapısı
+## Proje Yapısı
 
 ```
 RobotKoluSimulasyonu/
@@ -71,7 +71,7 @@ RobotKoluSimulasyonu/
 └── README.md                    # Bu dosya
 ```
 
-## 🔧 Teknik Detaylar
+## Teknik Detaylar
 
 ### Robot Kolu Parametreleri
 - **L1 = 2.0**: Taban-Omuz arası uzunluk (silindir: radius=0.15, 16 segment)
@@ -96,7 +96,7 @@ totalReach = (float)Math.Sqrt(endEffectorX * endEffectorX +
                               endEffectorZ * endEffectorZ);
 ```
 
-#### ⚠️ Matrix4 Kullanımı Hakkında Önemli Not
+#### Matrix4 Kullanımı Hakkında Önemli Not
 Bazı kaynaklarda `Matrix4` yapısı ile doğrudan matris alma önerilse de:
 ```csharp
 // ÖNERİLEN AMA ÇALIŞMAYAN YÖNTEMMatrix4 modelMatrix;
@@ -126,7 +126,7 @@ Profile = ContextProfile.Compatability  // Legacy OpenGL desteği
 Flags = ContextFlags.Default
 ```
 
-### 🔧 Neden OpenTK 4.8.2?
+### Neden OpenTK 4.8.2?
 Bu proje **OpenTK 4.8.2** kullanır çünkü:
 - ✅ .NET 6.0 ile tam uyumlu en güncel kararlı sürüm (Kasım 2023)
 - ✅ Legacy OpenGL (`GL.Begin/End`, `GL.Vertex3`, vb.) tam desteği
@@ -137,13 +137,13 @@ Bu proje **OpenTK 4.8.2** kullanır çünkü:
 
 **Not:** OpenTK 5.x henüz preview/alpha aşamasında ve üretim için önerilmez. OpenTK 3.x ise .NET 6.0 ile tam uyumlu değildir.
 
-## 📦 Gereksinimler
+## Gereksinimler
 
 - **.NET 6.0 SDK** veya üzeri (test edildi: 6.0.428)
 - **OpenTK 4.8.2**
 - **Windows 10/11** (OpenGL 3.3+ destekli grafik kartı)
 
-## 🚀 Kurulum ve Çalıştırma
+## Kurulum ve Çalıştırma
 
 1. Projeyi restore edin:
 ```bash
@@ -170,7 +170,7 @@ OpenGL Yüklendi! Robot görünmelidir.
 Pencere boyutu: 1280x720
 ```
 
-## 📊 Pencere Başlığı Bilgileri
+## Pencere Başlığı Bilgileri
 
 Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 - **X, Y, Z**: Uç efektör koordinatları (2 ondalık basamak)
@@ -183,7 +183,7 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 4 DOF Robot Kolu | X: 0.00 Y: 2.23 Z: -8.46 | Toplam Uzunluk: 8.75 | Pençe: Kapalı | θ4: 45.0° | Kontroller: Q/E(Taban) W/S(Omuz) A/D(Dirsek) R/F(Bilek Roll) X(Pençe) Oklar(Kamera)
 ```
 
-## 🎨 Görsel Özellikler
+## Görsel Özellikler
 
 - **Renkli Robot Kısımları**:
   - 🔴 Kırmızı: Link 1 (Taban-Omuz) - Silindir geometri
@@ -199,7 +199,7 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 
 - **Rendering**: OpenGL immediate mode (Legacy) - OpenTK 4.x uyumlu
 
-## 🐛 Sorun Giderme
+## Sorun Giderme
 
 ### Robot Görünmüyorsa
 1. Grafik sürücülerinizi güncelleyin
@@ -210,7 +210,7 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 - VSync varsayılan olarak aktif
 - `UpdateFrequency = 60.0` ile sınırlandırılmış
 
-## 📝 Notlar
+## Notlar
 
 - ✅ Tüm **zorunlu gereksinimler** başarıyla uygulanmıştır
 - ✅ Kod iyi organize edilmiş ve **Türkçe yorumlanmıştır**
@@ -219,7 +219,7 @@ Pencere başlığında şu bilgiler gerçek zamanlı olarak gösterilir:
 - ✅ **OpenTK 4.8.2** ve **.NET 6.0** ile tam uyumlu
 - ✅ Konsol çıktısı ile **debug bilgileri** sağlanır
 
-## 🚀 Neden Bu Proje?
+## Neden Bu Proje?
 
 Bu 4 DOF robot kolu simülatörü, modern robotik sistemlerin temel prensiplerini öğrenmek ve uygulamak için geliştirilmiştir:
 
@@ -230,14 +230,14 @@ Bu 4 DOF robot kolu simülatörü, modern robotik sistemlerin temel prensiplerin
 - ✅ **3D Görselleştirme**: OpenGL ile gerçek zamanlı rendering
 - ✅ **İnteraktif Kontrol**: Anlık klavye kontrolü ile dinamik test
 
-## 💡 Kullanım Alanları
+## Kullanım Alanları
 
-- 📚 **Eğitim**: Robotik kinematik öğrenimi
-- 🔬 **Araştırma**: Robot kolu davranış simülasyonu
-- 🎮 **Prototipleme**: Gerçek robot kontrol testleri öncesi validasyon
-- 🛠️ **Geliştirme**: Forward kinematics algoritma testi
+-  **Eğitim**: Robotik kinematik öğrenimi
+-  **Araştırma**: Robot kolu davranış simülasyonu
+-  **Prototipleme**: Gerçek robot kontrol testleri öncesi validasyon
+-  **Geliştirme**: Forward kinematics algoritma testi
 
-## 👨‍💻 Geliştirici
+## Geliştirici
 
 **Robotik Sistemler Projesi - 4 DOF Robot Kolu Simülatörü**
 
@@ -255,10 +255,10 @@ Bu 4 DOF robot kolu simülatörü, modern robotik sistemlerin temel prensiplerin
 - İnteraktif Gripper Kontrolü
 - Gerçek Zamanlı Koordinat Gösterimi
 
-## 📜 Lisans
+## Lisans
 
 Bu proje eğitim amaçlı geliştirilmiştir.
 
 ---
 
-**Proje Durumu:** ✅ Tamamlandı ve Test Edildi
+**Proje Durumu:**  Tamamlandı ve Test Edildi
